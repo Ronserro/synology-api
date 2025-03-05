@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import Optional
 from . import base_api
 
 
@@ -84,6 +83,15 @@ class VPN(base_api.BaseApi):
         req_param = {'version': info['maxVersion'], 'method': 'load', 'serv_type': 'l2tp'}
 
         return self.request_data(api_name, api_path, req_param)
+
+    # This will download the VPNConfig.ovpn file in bytes
+    def openvpn_export_configuration(self) -> bytes:
+        api_name = 'SYNO.VPNServer.Settings.Certificate'
+        info = self.gen_list[api_name]
+        api_path = info['path']
+        req_param = {'version': info['maxVersion'], 'method': 'export', 'serv_type': 'openvpn'}
+
+        return self.request_data(api_name, api_path, req_param, response_json=False).content
 
     # TODO not working {'error': {'code': 600}, 'success': False} response
     '''def pptp_settings_setup(self, serv_type='pptp', serv_enable=True, serv_ip='10.0.0.0', serv_range=5, auth_type=2,
